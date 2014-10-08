@@ -64,6 +64,8 @@ class Session(requestsSession):
         happens in the background thread.
         """
         def func(d):
+            """Callbacks the deferred d upon request completion/error.
+            """
             try:
                 background_callback = kwargs.pop('background_callback', None)
                 res = requestsSession.request(self, *args, **kwargs)

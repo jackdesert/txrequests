@@ -33,6 +33,7 @@ Response can be retrieved by calling the result method on the Future:
 .. code-block:: python
 
     from txrequests import Session
+    from twisted.internet import defer
 
     @defer.inlineCallbacks
     def main():
@@ -88,6 +89,7 @@ for a simple example take json parsing.
 
     from pprint import pprint
     from txrequests import Session
+    from twisted.internet import defer
 
     @defer.inlineCallbacks
     def main():

@@ -90,7 +90,7 @@ for a simple example take json parsing.
     from txrequests import Session
 
     @defer.inlineCallbacks
-    def main()
+    def main():
         with Session() as session:
 
             def bg_cb(sess, resp):

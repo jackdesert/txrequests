@@ -20,14 +20,15 @@ of twisted threadpool.
 
 """
 
-from twisted.internet import defer, reactor
+from twisted.internet import defer
+from twisted.internet import reactor
 from requests import Session as requestsSession
 from twisted.python.threadpool import ThreadPool
 
 
 class Session(requestsSession):
 
-    def __init__(self, pool=None,  minthreads=1, maxthreads=4, **kwargs):
+    def __init__(self, pool=None, minthreads=1, maxthreads=4, **kwargs):
         """Creates a twisted aware Session
 
         Notes
@@ -43,7 +44,7 @@ class Session(requestsSession):
             pool = ThreadPool(minthreads=minthreads, maxthreads=maxthreads)
             # unclosed ThreadPool leads to reactor hangs at shutdown
             # this is a problem in many situation, so better enforce pool stop here
-            reactor.addSystemEventTrigger("before", "shutdown", lambda:pool.stop())
+            reactor.addSystemEventTrigger("before", "shutdown", lambda: pool.stop())
         self.pool = pool
         if self.ownPool:
             pool.start()
@@ -62,7 +63,9 @@ class Session(requestsSession):
         response in the background, e.g. call resp.json() so that json parsing
         happens in the background thread.
         """
-        def func():
+        def func(d):
+            """Callbacks the deferred d upon request completion/error.
+            """
             try:
                 background_callback = kwargs.pop('background_callback', None)
                 res = requestsSession.request(self, *args, **kwargs)
@@ -73,5 +76,5 @@ class Session(requestsSession):
                 reactor.callFromThread(d.errback, e)
 
         d = defer.Deferred()
-        self.pool.callInThread(func)
+        self.pool.callInThread(func, d)
         return d

@@ -20,9 +20,8 @@ of twisted threadpool.
 
 """
 
-from twisted.internet import defer
-from twisted.internet import reactor
 from requests import Session as requestsSession
+from twisted.internet import defer, reactor
 from twisted.python.threadpool import ThreadPool
 
 
@@ -44,15 +43,19 @@ class Session(requestsSession):
             pool = ThreadPool(minthreads=minthreads, maxthreads=maxthreads)
             # unclosed ThreadPool leads to reactor hangs at shutdown
             # this is a problem in many situation, so better enforce pool stop here
-            reactor.addSystemEventTrigger("before", "shutdown", lambda: pool.stop())
+            reactor.addSystemEventTrigger("after", "shutdown", lambda: pool.stop())
         self.pool = pool
         if self.ownPool:
             pool.start()
 
     def close(self):
-        requestsSession.close(self)
-        if self.ownPool:
-            self.pool.stop()
+        try:
+            requestsSession.close(self)
+        finally:
+            if self.ownPool:
+                # dont wait for the threads
+                self.ownPool.threads = []
+                self.pool.stop()
 
     def request(self, *args, **kwargs):
         """Maintains the existing api for Session.request.

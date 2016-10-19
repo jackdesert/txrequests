@@ -1,15 +1,12 @@
 language: python
 python:
-  - 2.6
   - 2.7
 env:
-  - TWISTED=9.0.0  HTTPBIN_URL=http://httpbin.org/
-  - TWISTED=10.2.0 HTTPBIN_URL=http://httpbin.org/
-  - TWISTED=11.1.0 HTTPBIN_URL=http://httpbin.org/
-  - TWISTED=12.2.0 HTTPBIN_URL=http://httpbin.org/
-  - TWISTED=13.0.0 HTTPBIN_URL=http://httpbin.org/
+  - TWISTED=14.0.0 HTTPBIN_URL=http://httpbin.org/
+  - TWISTED=15.0.0 HTTPBIN_URL=http://httpbin.org/
   - TWISTED=latest HTTPBIN_URL=http://httpbin.org/
 install:
+  - pip install -U pip
   - "[ $TWISTED = latest ] || pip install Twisted==$TWISTED"
   - pip install .
 script: trial test_txrequests.py

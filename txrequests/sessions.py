@@ -53,8 +53,6 @@ class Session(requestsSession):
             requestsSession.close(self)
         finally:
             if self.ownPool:
-                # dont wait for the threads
-                self.ownPool.threads = []
                 self.pool.stop()
 
     def request(self, *args, **kwargs):

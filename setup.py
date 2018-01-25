@@ -39,7 +39,6 @@ setup(
     url='https://github.com/tardyp/txrequests',
     zip_safe=False,
     classifiers=(
-        'Development Status :: 3 - Alpha',
         'Intended Audience :: Developers',
         'Natural Language :: English',
         'License :: OSI Approved :: Apache Software License',
